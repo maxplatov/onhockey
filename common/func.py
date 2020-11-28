@@ -1,7 +1,7 @@
 """Вспомогательные функции"""
 __author__ = 'Платов М.И.'
 
-from transliterate import translit
+from transliterate import translit, exceptions
 from langdetect import detect
 from telebot import types
 
@@ -20,7 +20,11 @@ def get_team_name(team: str) -> str:
         Имя команды английскими буквами
     """
     first_name = team.split(' ')[0]
-    if detect(first_name) != ENGLISH_TEXT:
+    try:
+        detect_result = detect(first_name)
+    except exceptions.LanguageDetectionError:
+        detect_result = None
+    if detect_result != ENGLISH_TEXT:
         return translit(first_name, reversed=True)
     return first_name
 

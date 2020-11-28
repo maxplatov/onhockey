@@ -38,15 +38,16 @@ def get_schedule(team: str) -> List[str]:
     """
     parser = BeautifulSoup(_get_responce(SiteInfo.SCHEDULE), 'html.parser')
     games = parser.find('table', BodyConfig.TABLE).find_all('tr', BodyConfig.GAME)
-    find_game = None
+    found_game = None
     links = []
     for game_info in games:
         if team in game_info.text:
-            find_game = game_info
+            found_game = game_info
             break
-    href_tags = find_game.find_all('a')
-    for tag in href_tags:
-        links.append(tag.get('href'))
+    if found_game:
+        href_tags = found_game.find_all('a') or []
+        for tag in href_tags:
+            links.append(tag.get('href'))
     # пользователи хотят ссылки на трансляции, а не файлы
     return list(filter(lambda x: FILE_EXTENSION not in x, links))
 
