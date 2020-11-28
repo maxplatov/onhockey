@@ -23,7 +23,7 @@ def start_handler(message: dict):
     bot.send_message(message.chat.id, START_MSG)
 
 
-@telebot.message_handler(content_types=['text'])
+@bot.message_handler(content_types=['text'])
 def text_handler(message: dict):
     """Обработка всех сообщений"""
     bot.send_message(message.chat.id, message.text)
