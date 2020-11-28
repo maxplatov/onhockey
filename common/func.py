@@ -18,7 +18,7 @@ def get_team_name(team: str) -> str:
     Returns:
         Имя команды английскими буквами
     """
-    first_name = team.split(' ')[0]
+    first_name = team.split(' ')[0].lower()
     if not first_name.isascii():
         try:
             return translit(first_name, reversed=True)

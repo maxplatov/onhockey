@@ -41,7 +41,7 @@ def get_schedule(team: str) -> List[str]:
     found_game = None
     links = []
     for game_info in games:
-        if team in game_info.text:
+        if team in game_info.text.lower():
             found_game = game_info
             break
     if found_game:
