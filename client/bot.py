@@ -1,9 +1,9 @@
 """Бот"""
 __author__ = 'Платов М.И.'
 
-import telebot
+import os
 
-from common.constants import GENERAL_TOKEN
+import telebot
 
 
 START_MSG = 'Пришли мне имя команды, трансляцию которой ты хочешь получить'
@@ -14,7 +14,7 @@ def _create_telebot(token: str):
     return telebot.TeleBot(token)
 
 
-telebot = _create_telebot(GENERAL_TOKEN)
+telebot = _create_telebot(os.environ['TELEGRAM_TOKEN'])
 
 
 @telebot.message_handler(commands=['start', 'go'])
