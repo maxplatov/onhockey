@@ -8,7 +8,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from common.constants import SiteInfo, BodyConfig
-from common.func import get_teams_info
+from common.func import get_teams_info, get_valid_link
 
 
 FILE_EXTENSION = 'm3u8'
@@ -62,4 +62,4 @@ async def get_source_link(channel: str) -> str:
     """
     res = _get_responce(channel)
     iframe = BeautifulSoup(res, 'html.parser').find('iframe')
-    return iframe and iframe.get('src')
+    return get_valid_link(iframe and iframe.get('src'))

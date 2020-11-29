@@ -3,6 +3,7 @@ __author__ = 'Платов М.И.'
 
 import re
 from typing import List
+from urllib.parse import urlparse
 
 from transliterate import translit
 from telebot import types
@@ -66,3 +67,12 @@ def get_teams_info(game: str) -> str:
     """
     info = re.search(r'([A-Za-z].*-.*)', game)
     return info.group(1) if info else None
+
+
+def get_valid_link(url: str):
+    """Возвращаем url если он корректный"""
+    if url:
+        parsed_url = urlparse(url)
+        if parsed_url.scheme and parsed_url.netloc and parsed_url.path:
+            return parsed_url.geturl()
+    return None
