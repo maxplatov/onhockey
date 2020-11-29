@@ -14,8 +14,8 @@ class Onhockey(TeleBot):
 
     games: List[Game] = None
 
-    def __init__(self, token: str):
-        super().__init__(token)
+    def __init__(self, token: str, parse_mode: str):
+        super().__init__(token, parse_mode=parse_mode)
         self.refresh_games()
 
     def refresh_games(self):

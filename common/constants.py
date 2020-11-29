@@ -10,6 +10,9 @@ class UserMessage:
     """Сообщение об отсутствии ссылок"""
     ALL_LINK = 'Found links:'
     """Строковый идентификатор для получения следующей ссылки"""
+    HELP = "Command : " \
+           "- /all - view current games"
+    """Как пользоваться ботом"""
 
 
 class SiteInfo:

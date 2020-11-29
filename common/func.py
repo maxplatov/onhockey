@@ -10,6 +10,13 @@ from telebot import types
 
 ENGLISH_TEXT = 'en'
 
+MONOSPACED_MODE = "`"
+
+
+def _get_team_name(team: str) -> str:
+    """Имя команды в моноширинном ввиде, чтобы при клике на текст, он копировался"""
+    return MONOSPACED_MODE + team + MONOSPACED_MODE
+
 
 def get_team_name(team: str) -> str:
     """
@@ -42,7 +49,7 @@ def get_all_games(games) -> str:
     for game in games:
         if msg:
             msg += '\n'
-        msg += game.info
+        msg += _get_team_name(game.home) + ' - ' + _get_team_name(game.guest)
     return msg
 
 

@@ -9,7 +9,7 @@ from client.onhockey import Onhockey
 from common.constants import UserMessage
 from common.func import get_button_markup, get_all_games
 
-onhockey_bot = Onhockey(os.environ['TELEGRAM_TOKEN'])
+onhockey_bot = Onhockey(os.environ['TELEGRAM_TOKEN'], 'MARKDOWN')
 
 
 @onhockey_bot.message_handler(commands=['start', 'go'])
@@ -18,6 +18,15 @@ def start_handler(message: dict):
     onhockey_bot.send_message(
         message.chat.id,
         UserMessage.START
+    )
+
+
+@onhockey_bot.message_handler(commands=['help'])
+def start_handler(message: dict):
+    """Доступные команды"""
+    onhockey_bot.send_message(
+        message.chat.id,
+        UserMessage.HELP + '\n' + UserMessage.START
     )
 
 
