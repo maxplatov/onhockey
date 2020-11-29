@@ -27,10 +27,13 @@ def start_handler(message: dict):
 def start_handler(message: dict):
     """Просмотр доступных трансляций.Отладочная команда."""
     msg = ''
-    for game in onhockey_bot.games:
-        msg += game.info
-        msg += '\n'
-        msg += str(game.links)
+    if onhockey_bot.games:
+        for game in onhockey_bot.games:
+            msg += game.info
+            msg += '\n'
+            msg += str(game.links)
+    else:
+        msg = 'empty'
     onhockey_bot.send_message(
         message.chat.id,
         msg
