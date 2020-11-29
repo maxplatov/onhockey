@@ -20,6 +20,7 @@ class Onhockey(TeleBot):
 
     def refresh_games(self):
         """Обновляем данные о текущих играх"""
+        self.games = []
         for item in get_games():
             self.games.append(Game(*item))
 
