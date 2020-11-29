@@ -28,16 +28,16 @@ class Game:
 
     def __post_init__(self):
         self.home, self.guest = _get_teams(self.info)
-        futures = [self.get_link_from_channel(channel) for channel in self.channels]
 
         loop = asyncio.get_event_loop()
-        loop.run_until_complete(asyncio.wait(futures))
+        loop.run_until_complete(self.get_link_from_channel())
         loop.close()
 
-    async def get_link_from_channel(self, channel):
+    async def get_link_from_channel(self):
         """
         Добавляет ссылку на прямую трансляцию из канала
-        Args:
-            channel: Канал, из которого получаем ссылку
         """
-        self.links.append(get_source_link(channel))
+        futures = [get_source_link(channel) for channel in self.channels]
+        done, pending = await asyncio.wait(futures)
+        for task in done:
+            self.links.append(task.result())

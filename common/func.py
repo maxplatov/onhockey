@@ -28,6 +28,23 @@ def get_team_name(team: str) -> str:
     return first_name
 
 
+def get_all_games(games) -> str:
+    """
+    Все игры, которые транслируются
+    Args:
+        games: Массив игр
+    Returns:
+        Team 1 - Team 2
+        Team 3 - Team 4
+    """
+    msg = ''
+    for game in games:
+        if msg:
+            msg += '\n'
+        msg += game.info
+    return msg
+
+
 def get_button_markup(links: List[str]) -> types:
     """Кнопка для получения следующей ссылки"""
     if links:

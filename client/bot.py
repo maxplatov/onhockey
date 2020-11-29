@@ -5,11 +5,9 @@ import os
 import time
 import datetime
 
-from telebot import types
-
 from client.onhockey import Onhockey
 from common.constants import UserMessage
-from common.func import get_button_markup
+from common.func import get_button_markup, get_all_games
 
 onhockey_bot = Onhockey(os.environ['TELEGRAM_TOKEN'])
 
@@ -25,15 +23,8 @@ def start_handler(message: dict):
 
 @onhockey_bot.message_handler(commands=['all'])
 def start_handler(message: dict):
-    """Просмотр доступных трансляций.Отладочная команда."""
-    msg = ''
-    if onhockey_bot.games:
-        for game in onhockey_bot.games:
-            msg += game.info
-            msg += '\n'
-            msg += str(game.links)
-    else:
-        msg = 'empty'
+    """Просмотр доступных трансляций"""
+    msg = get_all_games(onhockey_bot.games) if onhockey_bot.games else UserMessage.NOT_FOUND
     onhockey_bot.send_message(
         message.chat.id,
         msg

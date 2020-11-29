@@ -51,7 +51,7 @@ def get_games() -> List[tuple]:
     return result
 
 
-def get_source_link(channel: str) -> str:
+async def get_source_link(channel: str) -> str:
     """
     Ссылка на трансляцию
     Args:
