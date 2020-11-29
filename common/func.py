@@ -47,4 +47,5 @@ def get_teams_info(game: str) -> str:
     Returns:
         Team 1 - Team 2
     """
-    return re.search(r'\n(.*-.*)\n', game).group(1)
+    info = re.search(r'\n(.*-.*)\n', game)
+    return info.group(1) if info else None
