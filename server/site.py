@@ -25,7 +25,12 @@ def _get_responce(path: str, site: str = SiteInfo.ADDRESS) -> str:
     Returns:
         Текст ответа
     """
-    return requests.get(parse.urljoin(site, path)).text
+    try:
+        res = requests.get(parse.urljoin(site, path))
+        if res.status_code == requests.codes.ok:
+            return res.text
+    except:
+        return ''
 
 
 def get_games() -> List[tuple]:
@@ -34,20 +39,22 @@ def get_games() -> List[tuple]:
     Returns:
         Массив игр
     """
-    parser = BeautifulSoup(_get_responce(SiteInfo.SCHEDULE), 'html.parser')
-    games = parser.find('table', BodyConfig.TABLE).find_all('tr', BodyConfig.GAME)
     result = []
-    for game in games:
-        channels = []
-        info = get_teams_info(game.text)
-        if info:
-            href_tags = game.find_all('a') or []
-            for tag in href_tags:
-                channels.append(tag.get('href'))
-            # пользователи хотят ссылки на трансляции, а не файлы трансляций
-            channels = list(filter(lambda x: FILE_EXTENSION not in x, channels))
-            if channels:
-                result.append((info, channels))
+    res = _get_responce(SiteInfo.SCHEDULE)
+    if res:
+        parser = BeautifulSoup(res, 'html.parser')
+        games = parser.find('table', BodyConfig.TABLE).find_all('tr', BodyConfig.GAME)
+        for game in games:
+            channels = []
+            info = get_teams_info(game.text)
+            if info:
+                href_tags = game.find_all('a') or []
+                for tag in href_tags:
+                    channels.append(tag.get('href'))
+                # пользователи хотят ссылки на трансляции, а не файлы трансляций
+                channels = list(filter(lambda x: FILE_EXTENSION not in x, channels))
+                if channels:
+                    result.append((info, channels))
     return result
 
 
@@ -61,5 +68,8 @@ async def get_source_link(channel: str) -> str:
         Прямая ссылка на трансляцию
     """
     res = _get_responce(channel)
-    iframe = BeautifulSoup(res, 'html.parser').find('iframe')
-    return get_valid_link(iframe and iframe.get('src'))
+    link = None
+    if res:
+        iframe = BeautifulSoup(res, 'html.parser').find('iframe')
+        link = get_valid_link(iframe and iframe.get('src'))
+    return link
