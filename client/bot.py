@@ -34,7 +34,9 @@ def start_handler(message: dict):
 @onhockey_bot.message_handler(content_types=['text'])
 def text_handler(message: dict):
     """Обработка всех сообщений"""
-    markup = get_button_markup(onhockey_bot.get_links(message.text))
+    links = onhockey_bot.get_links(message.text)
+    print('search ->>' + str(links))
+    markup = get_button_markup(links)
     if markup:
         onhockey_bot.send_message(
             message.chat.id,
