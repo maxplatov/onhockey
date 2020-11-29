@@ -4,7 +4,7 @@ __author__ = 'Платов М.И.'
 
 class UserMessage:
     """Сообщения для пользователя"""
-    START = 'Send me the name of the team you want to broadcast'
+    START = 'Send me the name of the team you want to see, for example: `Lokomotiv`'
     """Приветственное сообщение"""
     NOT_FOUND = "The broadcast hasn't started yet or You've viewed all the available links"
     """Сообщение об отсутствии ссылок"""
