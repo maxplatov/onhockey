@@ -34,6 +34,8 @@ def get_games() -> List[tuple]:
     Returns:
         Массив игр
     """
+    res = _get_responce(SiteInfo.SCHEDULE)
+    print('responce result ->> ' + res)
     parser = BeautifulSoup(_get_responce(SiteInfo.SCHEDULE), 'html.parser')
     games = parser.find('table', BodyConfig.TABLE).find_all('tr', BodyConfig.GAME)
     result = []
