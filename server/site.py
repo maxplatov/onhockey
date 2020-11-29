@@ -41,19 +41,11 @@ def get_games() -> List[tuple]:
         channels = []
         info = get_teams_info(game.text)
         if info:
-            print('info found')
-        else:
-            print('info not found ->>' + game.text)
-        if info:
             href_tags = game.find_all('a') or []
             for tag in href_tags:
                 channels.append(tag.get('href'))
             # пользователи хотят ссылки на трансляции, а не файлы трансляций
             channels = list(filter(lambda x: FILE_EXTENSION not in x, channels))
-            if channels:
-                print('channels found')
-            else:
-                print('channels not found ->>' + str(game.text))
             if channels:
                 result.append((info, channels))
     return result
