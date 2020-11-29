@@ -2,9 +2,12 @@
 __author__ = 'Платов М.И.'
 
 import os
+import time
+import datetime
 
 from client.onhockey import Onhockey
-from common.constants import START_MSG, NEXT_LINK
+from common.constants import UserMessage
+from common.func import get_button_markup
 
 onhockey_bot = Onhockey(os.environ['TELEGRAM_TOKEN'])
 
@@ -14,18 +17,30 @@ def start_handler(message: dict):
     """Обработка первого сообщения"""
     onhockey_bot.send_message(
         message.chat.id,
-        START_MSG
+        UserMessage.START
     )
 
 
 @onhockey_bot.message_handler(content_types=['text'])
 def text_handler(message: dict):
     """Обработка всех сообщений"""
-    onhockey_bot.send_message(
-        message.chat.id,
-        onhockey_bot.get_link() if message.text == NEXT_LINK else onhockey_bot.get_link(message.text),
-        reply_markup=onhockey_bot.button_markup
-    )
+    links = onhockey_bot.get_links(message.text)
+    if links:
+        onhockey_bot.send_message(
+            message.chat.id,
+            UserMessage.ALL_LINK,
+            reply_markup=get_button_markup(links)
+        )
+    else:
+        onhockey_bot.send_message(
+            message.chat.id,
+            UserMessage.NOT_FOUND
+        )
 
 
 onhockey_bot.polling()
+
+while True:
+    if datetime.datetime.now().minute % 5 == 0:
+        onhockey_bot.refresh_games()
+    time.sleep(60)

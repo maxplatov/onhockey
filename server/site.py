@@ -8,6 +8,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from common.constants import SiteInfo, BodyConfig
+from common.func import get_teams_info
 
 
 FILE_EXTENSION = 'm3u8'
@@ -27,29 +28,26 @@ def _get_responce(path: str, site: str = SiteInfo.ADDRESS) -> str:
     return requests.get(parse.urljoin(site, path)).text
 
 
-def get_schedule(team: str) -> List[str]:
+def get_games() -> List[tuple]:
     """
-    Расписание игр для команды
-    Args:
-        team: Имя команды
-
+    Агрегация текущих игр
     Returns:
-        Внутренние пути до трансляций
+        Массив игр
     """
     parser = BeautifulSoup(_get_responce(SiteInfo.SCHEDULE), 'html.parser')
     games = parser.find('table', BodyConfig.TABLE).find_all('tr', BodyConfig.GAME)
-    found_game = None
-    links = []
-    for game_info in games:
-        if team in game_info.text.lower():
-            found_game = game_info
-            break
-    if found_game:
-        href_tags = found_game.find_all('a') or []
+    result = []
+    for game in games:
+        channels = []
+        info = get_teams_info(game.text)
+        href_tags = game.find_all('a') or []
         for tag in href_tags:
-            links.append(tag.get('href'))
-    # пользователи хотят ссылки на трансляции, а не файлы
-    return list(filter(lambda x: FILE_EXTENSION not in x, links))
+            channels.append(tag.get('href'))
+        # пользователи хотят ссылки на трансляции, а не файлы трансляций
+        channels = list(filter(lambda x: FILE_EXTENSION not in x, channels))
+        if channels:
+            result.append((info, channels))
+    return result
 
 
 def get_source_link(channel: str) -> str:
