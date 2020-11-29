@@ -72,4 +72,4 @@ async def get_source_link(channel: str) -> str:
     """
     res = _get_responce(channel)
     iframe = BeautifulSoup(res, 'html.parser').find('iframe')
-    return iframe.get('src')
+    return iframe and iframe.get('src')

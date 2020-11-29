@@ -40,4 +40,6 @@ class Game:
         futures = [get_source_link(channel) for channel in self.channels]
         done, pending = await asyncio.wait(futures)
         for task in done:
-            self.links.append(task.result())
+            link = task.result()
+            if link:
+                self.links.append(link)
