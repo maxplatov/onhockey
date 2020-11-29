@@ -3,3 +3,4 @@ https://teleg.run/onhockey_bot - Returns a link to the broadcast of your favorit
 
 How to launch your instance:
 - use your token [here](https://github.com/maxplatov/onhockey/blob/master/client/bot.py#L12) 
+- run : python3 {path_to_project}/client/bot.py
