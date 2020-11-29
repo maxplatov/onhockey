@@ -28,6 +28,7 @@ class Game:
 
     def __post_init__(self):
         self.home, self.guest = _get_teams(self.info)
+        self.links = []
 
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.get_link_from_channel())
