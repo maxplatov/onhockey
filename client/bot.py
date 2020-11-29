@@ -5,6 +5,8 @@ import os
 import time
 import datetime
 
+from telebot import types
+
 from client.onhockey import Onhockey
 from common.constants import UserMessage
 from common.func import get_button_markup
@@ -18,6 +20,20 @@ def start_handler(message: dict):
     onhockey_bot.send_message(
         message.chat.id,
         UserMessage.START
+    )
+
+
+@onhockey_bot.message_handler(commands=['all'])
+def start_handler(message: dict):
+    """Просмотр доступных трансляций.Отладочная команда."""
+    msg = ''
+    for game in onhockey_bot.games:
+        msg += game.info
+        msg += '\n'
+        msg += str(game.links)
+    onhockey_bot.send_message(
+        message.chat.id,
+        msg
     )
 
 
