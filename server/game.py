@@ -32,7 +32,6 @@ class Game:
 
         loop = asyncio.get_event_loop()
         loop.run_until_complete(self.get_link_from_channel())
-        loop.close()
 
     async def get_link_from_channel(self):
         """
