@@ -11,7 +11,7 @@ from server.site import get_source_link
 
 def _get_teams(info: str) -> List[str]:
     """Парсинг строки с названиями команд"""
-    return info.lower().split(' - ')
+    return info.split(' - ')
 
 
 @dataclass()
@@ -24,7 +24,7 @@ class Game:
     def __contains__(self, team: str):
         """Перегрузка вхождения"""
         item = team.lower()
-        return item in self.home or item in self.guest or item in self.info
+        return item in self.home.lower() or item in self.guest.lower() or item in self.info.lower()
 
     def __post_init__(self):
         self.home, self.guest = _get_teams(self.info)
