@@ -2,7 +2,7 @@
 __author__ = 'Платов М.И.'
 
 import threading
-from typing import List
+from typing import List, Optional
 
 from telebot import TeleBot
 
@@ -27,17 +27,17 @@ class Onhockey(TeleBot):
         for item in get_games():
             self.games.append(Game(*item))
 
-    def get_links(self, team: str = None) -> List[str]:
+    def get_sought_game(self, team: str = None) -> Optional[Game]:
         """
-        Ссылки на трансляции.
+        Получить игру по названию команды
         Args:
             team: Название команды
 
         Returns:
-            Ссылки на доступные трансляции
+            Игра с ссылками на трансляцию
         """
         if self.games:
             for game in self.games:
                 if team in game:
-                    return game.links
-        return []
+                    return game
+        return None

@@ -41,11 +41,12 @@ def start_handler(message: dict):
 @onhockey_bot.message_handler(content_types=['text'])
 def text_handler(message: dict):
     """Обработка всех сообщений"""
-    markup = get_button_markup(onhockey_bot.get_links(message.text))
+    current_game = onhockey_bot.get_sought_game(message.text)
+    markup = get_button_markup(current_game.links) if current_game else None
     if markup:
         onhockey_bot.send_message(
             message.chat.id,
-            UserMessage.ALL_LINK,
+            UserMessage.ALL_LINK + current_game.info,
             reply_markup=markup
         )
     else:

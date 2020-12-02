@@ -19,7 +19,7 @@ class UserMessage:
     """Приветственное сообщение"""
     NOT_FOUND = "The broadcast hasn't started yet or You've viewed all the available links"
     """Сообщение об отсутствии ссылок"""
-    ALL_LINK = 'Found links:'
+    ALL_LINK = 'Found links to '
     """Строковый идентификатор для получения следующей ссылки"""
     HELP = "Command : " \
            "- /all - view current games"

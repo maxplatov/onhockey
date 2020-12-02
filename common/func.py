@@ -13,7 +13,7 @@ ENGLISH_TEXT = 'en'
 MONOSPACED_MODE = "`"
 
 
-def _get_team_name(team: str) -> str:
+def _get_formatted_team_name(team: str) -> str:
     """Имя команды в моноширинном ввиде, чтобы при клике на текст, он копировался"""
     return MONOSPACED_MODE + team + MONOSPACED_MODE
 
@@ -49,7 +49,7 @@ def get_all_games(games) -> str:
     for game in games:
         if msg:
             msg += '\n'
-        msg += _get_team_name(game.home) + ' - ' + _get_team_name(game.guest)
+        msg += _get_formatted_team_name(game.home) + ' - ' + _get_formatted_team_name(game.guest)
     return msg
 
 
