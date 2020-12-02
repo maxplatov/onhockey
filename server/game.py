@@ -30,7 +30,8 @@ class Game:
         self.home, self.guest = _get_teams(self.info)
         self.links = []
 
-        loop = asyncio.get_event_loop()
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         loop.run_until_complete(self.get_link_from_channel())
 
     async def get_link_from_channel(self):

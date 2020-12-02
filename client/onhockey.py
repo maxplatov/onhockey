@@ -1,12 +1,14 @@
 """Класс для работы с данными сайта."""
 __author__ = 'Платов М.И.'
 
+import threading
 from typing import List
 
 from telebot import TeleBot
 
 from server.game import Game
 from server.site import get_games
+from common.constants import SYNC_PERIOD
 
 
 class Onhockey(TeleBot):
@@ -20,6 +22,7 @@ class Onhockey(TeleBot):
 
     def refresh_games(self):
         """Обновляем данные о текущих играх"""
+        threading.Timer(SYNC_PERIOD, self.refresh_games).start()
         self.games = []
         for item in get_games():
             self.games.append(Game(*item))

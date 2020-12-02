@@ -2,8 +2,6 @@
 __author__ = 'Платов М.И.'
 
 import os
-import time
-import datetime
 
 from client.onhockey import Onhockey
 from common.constants import UserMessage
@@ -58,8 +56,3 @@ def text_handler(message: dict):
 
 
 onhockey_bot.polling()
-
-while True:
-    if datetime.datetime.now().minute % 5 == 0:
-        onhockey_bot.refresh_games()
-    time.sleep(60)
