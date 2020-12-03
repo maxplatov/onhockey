@@ -8,6 +8,7 @@ from telebot import TeleBot
 
 from server.game import Game
 from server.site import get_games
+from common.func import get_team_name
 from common.constants import SYNC_PERIOD
 
 
@@ -27,7 +28,7 @@ class Onhockey(TeleBot):
         for item in get_games():
             self.games.append(Game(*item))
 
-    def get_sought_game(self, team: str = None) -> Optional[Game]:
+    def get_sought_game(self, team: str) -> Optional[Game]:
         """
         Получить игру по названию команды
         Args:
@@ -37,7 +38,8 @@ class Onhockey(TeleBot):
             Игра с ссылками на трансляцию
         """
         if self.games:
+            eng_team_name = get_team_name(team)
             for game in self.games:
-                if team in game:
+                if eng_team_name in game:
                     return game
         return None
