@@ -17,7 +17,7 @@ class UserMessage:
     """Сообщения для пользователя"""
     START = 'Send me the name of the team you want to see, for example: `Lokomotiv`'
     """Приветственное сообщение"""
-    NOT_FOUND = "The broadcast hasn't started yet or You've viewed all the available links"
+    NOT_FOUND = "The broadcast hasn't started yet or there are no available links"
     """Сообщение об отсутствии ссылок"""
     ALL_LINK = 'Found links to '
     """Строковый идентификатор для получения следующей ссылки"""
