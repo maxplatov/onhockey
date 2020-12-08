@@ -2,11 +2,11 @@
 __author__ = 'Платов М.И.'
 
 import re
-from typing import List
+from typing import List, Optional
 from urllib.parse import urlparse
 
 from transliterate import translit
-from telebot import types
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 MONOSPACED_MODE = "`"
 """Символ для моноширинности текста"""
@@ -69,12 +69,12 @@ def get_all_games(games) -> str:
     return msg
 
 
-def get_button_markup(links: List[str]) -> types:
+def get_button_markup(links: List[str]) -> Optional[InlineKeyboardMarkup]:
     """Кнопка для получения следующей ссылки"""
     if links:
-        source_markup = types.InlineKeyboardMarkup()
+        source_markup = InlineKeyboardMarkup()
         for link in links:
-            source_markup.add(types.InlineKeyboardButton(text=link, url=link))
+            source_markup.add(InlineKeyboardButton(text=link, url=link))
         return source_markup
     return None
 
