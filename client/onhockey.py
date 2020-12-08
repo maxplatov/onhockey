@@ -4,15 +4,20 @@ __author__ = 'Платов М.И.'
 import threading
 from typing import List, Optional
 
-from telebot import TeleBot
+import asyncio
+from aiogram import Bot
+from aiogram.dispatcher import Dispatcher
+from aiogram.utils import executor
 
 from server.game import Game
-from server.site import get_games
+from server.data_requests import get_games
+from server.gino.main import create_db
+from server.gino.operations import register_request
 from common.func import get_team_name
 from common.constants import SYNC_PERIOD
 
 
-class Onhockey(TeleBot):
+class Onhockey(Bot):
     """Класс Бот - onhockey"""
 
     games: List[Game] = None
@@ -28,18 +33,29 @@ class Onhockey(TeleBot):
         for item in get_games():
             self.games.append(Game(*item))
 
-    def get_sought_game(self, team: str) -> Optional[Game]:
+    async def get_sought_game(self, team: str, user_id: int) -> Optional[Game]:
         """
         Получить игру по названию команды
         Args:
             team: Название команды
+            user_id: Ид пользователя делающего запрос
 
         Returns:
             Игра с ссылками на трансляцию
         """
+        asyncio.create_task(register_request(user_id, team))
         if self.games:
             eng_team_name = get_team_name(team)
             for game in self.games:
                 if eng_team_name in game:
                     return game
         return None
+
+    @staticmethod
+    async def on_startup(dispatcher: Dispatcher):
+        """Хук старта приложения."""
+        await create_db()
+
+    def run(self, dispatcher: Dispatcher):
+        """Запуск бота."""
+        executor.start_polling(dispatcher, on_startup=self.on_startup)

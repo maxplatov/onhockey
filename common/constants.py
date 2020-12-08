@@ -12,6 +12,9 @@ SYNC_PERIOD = 300.0
 В итоге 2 пересекающихся временных диапазона, для покрытия которых достаточно 5минутного обновления расписания
 """
 
+TOP_LIMIT = 5
+"""Количество команд в ответе для построения топа"""
+
 
 class UserMessage:
     """Сообщения для пользователя"""
@@ -21,8 +24,11 @@ class UserMessage:
     """Сообщение об отсутствии ссылок"""
     ALL_LINK = 'Found links to '
     """Строковый идентификатор для получения следующей ссылки"""
-    HELP = "Command : " \
-           "- /all - view current games"
+    TOP_TEAMS = 'Most popular requested teams : '
+    """Список самых популярных команд"""
+    HELP = 'Command : \n' \
+           '\- /all \- view current games \n' \
+           '\- /top \- popular requested teams '
     """Как пользоваться ботом"""
 
 

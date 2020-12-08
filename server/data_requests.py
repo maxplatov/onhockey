@@ -15,7 +15,7 @@ FILE_EXTENSION = 'm3u8'
 """Расширение файла трансляции"""
 
 
-def _get_responce(path: str, site: str = SiteInfo.ADDRESS) -> str:
+def _get_response(path: str, site: str = SiteInfo.ADDRESS) -> str:
     """
     Выполнить запрос и получить текст ответа
     Args:
@@ -40,21 +40,22 @@ def get_games() -> List[tuple]:
         Массив игр
     """
     result = []
-    res = _get_responce(SiteInfo.SCHEDULE)
+    res = _get_response(SiteInfo.SCHEDULE)
     if res:
-        parser = BeautifulSoup(res, 'html.parser')
-        games = parser.find('table', BodyConfig.TABLE).find_all('tr', BodyConfig.GAME)
-        for game in games:
-            channels = []
-            info = get_teams_info(game.text)
-            if info:
-                href_tags = game.find_all('a') or []
-                for tag in href_tags:
-                    channels.append(tag.get('href'))
-                # пользователи хотят ссылки на трансляции, а не файлы трансляций
-                channels = list(filter(lambda x: FILE_EXTENSION not in x, channels))
-                if channels:
-                    result.append((info, channels))
+        table = BeautifulSoup(res, 'html.parser').find('table', BodyConfig.TABLE)
+        if table:
+            games = table.find_all('tr', BodyConfig.GAME)
+            for game in games:
+                channels = []
+                info = get_teams_info(game.text)
+                if info:
+                    href_tags = game.find_all('a') or []
+                    for tag in href_tags:
+                        channels.append(tag.get('href'))
+                    # пользователи хотят ссылки на трансляции, а не файлы трансляций
+                    channels = list(filter(lambda x: FILE_EXTENSION not in x, channels))
+                    if channels:
+                        result.append((info, channels))
     return result
 
 
@@ -67,7 +68,7 @@ async def get_source_link(channel: str) -> str:
     Returns:
         Прямая ссылка на трансляцию
     """
-    res = _get_responce(channel)
+    res = _get_response(channel)
     link = None
     if res:
         iframe = BeautifulSoup(res, 'html.parser').find('iframe')

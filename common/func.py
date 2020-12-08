@@ -8,14 +8,30 @@ from urllib.parse import urlparse
 from transliterate import translit
 from telebot import types
 
-ENGLISH_TEXT = 'en'
-
 MONOSPACED_MODE = "`"
+"""Символ для моноширинности текста"""
 
 
 def _get_formatted_team_name(team: str) -> str:
     """Имя команды в моноширинном ввиде, чтобы при клике на текст, он копировался"""
     return MONOSPACED_MODE + team + MONOSPACED_MODE
+
+
+def formatted_top(teams: List[str]) -> str:
+    """
+    Отформатированный список команд для топа
+    Args:
+        teams: массив названий команд
+
+    Returns:
+        Отформатированную строку для топа
+    """
+    msg = ''
+    for index, team in enumerate(teams):
+        if msg:
+            msg += '\n'
+        msg += str(index + 1) + '\. ' + _get_formatted_team_name(team)
+    return msg
 
 
 def get_team_name(team: str) -> str:
