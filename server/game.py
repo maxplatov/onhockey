@@ -19,10 +19,11 @@ def _get_teams(info: str) -> List[str]:
 class Game:
     """Игра с трансляциями"""
     info: str = None
+    channels: List[str] = None
+
+    links: List[str] = None
     home: str = None
     guest: str = None
-    channels: List[str] = None
-    links: List[str] = None
 
     def __contains__(self, team: str):
         """Перегрузка вхождения"""
