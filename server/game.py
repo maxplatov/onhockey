@@ -35,9 +35,7 @@ class Game:
         asyncio.create_task(create_team_if_not_exist(self.guest))
         self.links = []
 
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-        loop.run_until_complete(self.get_link_from_channel())
+        asyncio.create_task(self.get_link_from_channel())
 
     async def get_link_from_channel(self):
         """
