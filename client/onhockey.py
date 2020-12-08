@@ -24,7 +24,6 @@ class Onhockey(Bot):
 
     def __init__(self, token: str, parse_mode: str):
         super().__init__(token, parse_mode=parse_mode)
-        self.refresh_games()
 
     def refresh_games(self):
         """Обновляем данные о текущих играх"""
@@ -51,10 +50,10 @@ class Onhockey(Bot):
                     return game
         return None
 
-    @staticmethod
-    async def on_startup(dispatcher: Dispatcher):
+    async def on_startup(self, dispatcher: Dispatcher):
         """Хук старта приложения."""
         await create_db()
+        self.refresh_games()
 
     def run(self, dispatcher: Dispatcher):
         """Запуск бота."""
