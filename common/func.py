@@ -43,13 +43,13 @@ def get_team_name(team: str) -> str:
     Returns:
         Имя команды английскими буквами
     """
-    first_name = team.split(' ')[0].lower()
-    if not first_name.isascii():
+    team_name = team.lstrip().rstrip().title()
+    if not team_name.isascii():
         try:
-            return translit(first_name, reversed=True)
+            return translit(team_name, reversed=True)
         except:
-            return first_name
-    return first_name
+            return team_name
+    return team_name
 
 
 def get_all_games(games) -> str:

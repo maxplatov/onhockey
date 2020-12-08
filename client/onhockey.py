@@ -43,10 +43,11 @@ class Onhockey(Bot):
             Игра с ссылками на трансляцию
         """
         eng_team_name = get_team_name(team)
-        asyncio.create_task(register_request(user_id, eng_team_name.capitalize()))
+        asyncio.create_task(register_request(user_id, eng_team_name))
         if self.games:
+            team_name = eng_team_name.split(' ')[0].lower()
             for game in self.games:
-                if eng_team_name in game:
+                if team_name in game:
                     return game
         return None
 
