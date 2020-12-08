@@ -65,7 +65,7 @@ def get_all_games(games) -> str:
     for game in games:
         if msg:
             msg += '\n'
-        msg += _get_formatted_team_name(game.home) + ' - ' + _get_formatted_team_name(game.guest)
+        msg += _get_formatted_team_name(game.home) + ' \- ' + _get_formatted_team_name(game.guest)
     return msg
 
 
