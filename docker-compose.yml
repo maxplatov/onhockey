@@ -1,0 +1,21 @@
+version: "3"
+services:
+  bot:
+    build: .
+    command: ["python", "run.py"]
+    environment:
+      TELEGRAM_TOKEN: ${TELEGRAM_TOKEN}
+      DATABASE_URL: ${DATABASE_URL}
+  postgresql:
+    image: postgres
+    container_name: pg-docker
+    environment:
+      PGHOST: ${PGHOST:-db}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres} #changeme
+      POSTGRES_DB: postgres
+      PGDATA: /data/postgres
+    volumes:
+      - ./postgres.conf:/etc/postgresql/postgresql.conf
+    command: postgres -c config_file=/etc/postgresql/postgresql.conf
+    restart: always
