@@ -68,4 +68,7 @@ async def text_handler(message: types.message):
             UserMessage.NOT_FOUND
         )
 
-onhockey_bot.run(dispatcher)
+
+def run():
+    """Запуск бота и поднятие коннектов к базе."""
+    onhockey_bot.run(dispatcher)

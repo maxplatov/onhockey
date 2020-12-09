@@ -43,7 +43,7 @@ def get_team_name(team: str) -> str:
     Returns:
         Имя команды английскими буквами
     """
-    team_name = team.lstrip().rstrip().title()
+    team_name = team.strip().title()
     if not team_name.isascii():
         try:
             return translit(team_name, reversed=True)

@@ -4,7 +4,7 @@ __author__ = 'Платов М.И.'
 from urllib import parse
 from typing import List
 
-import requests
+import aiohttp
 from bs4 import BeautifulSoup
 
 from common.constants import SiteInfo, BodyConfig
@@ -15,7 +15,7 @@ FILE_EXTENSION = 'm3u8'
 """Расширение файла трансляции"""
 
 
-def _get_response(path: str, site: str = SiteInfo.ADDRESS) -> str:
+async def _get_response(path: str, site: str = SiteInfo.ADDRESS) -> str:
     """
     Выполнить запрос и получить текст ответа
     Args:
@@ -25,22 +25,26 @@ def _get_response(path: str, site: str = SiteInfo.ADDRESS) -> str:
     Returns:
         Текст ответа
     """
+    session = aiohttp.ClientSession()
     try:
-        res = requests.get(parse.urljoin(site, path))
-        if res.status_code == requests.codes.ok:
-            return res.text
+        async with session.get(parse.urljoin(site, path), raise_for_status=True) as resp:
+            if resp.status == 200:
+                result = await resp.text()
     except:
-        return ''
+        result = ''
+    finally:
+        await session.close()
+    return result
 
 
-def get_games() -> List[tuple]:
+async def get_games() -> List[tuple]:
     """
     Агрегация текущих игр
     Returns:
         Массив игр
     """
     result = []
-    res = _get_response(SiteInfo.SCHEDULE)
+    res = await _get_response(SiteInfo.SCHEDULE)
     if res:
         table = BeautifulSoup(res, 'html.parser').find('table', BodyConfig.TABLE)
         if table:
@@ -68,7 +72,7 @@ async def get_source_link(channel: str) -> str:
     Returns:
         Прямая ссылка на трансляцию
     """
-    res = _get_response(channel)
+    res = await _get_response(channel)
     link = None
     if res:
         iframe = BeautifulSoup(res, 'html.parser').find('iframe')

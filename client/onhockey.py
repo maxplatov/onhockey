@@ -1,7 +1,6 @@
 """Класс для работы с данными сайта."""
 __author__ = 'Платов М.И.'
 
-import threading
 from typing import List, Optional
 
 import asyncio
@@ -20,17 +19,19 @@ from common.constants import SYNC_PERIOD
 class Onhockey(Bot):
     """Класс Бот - onhockey"""
 
-    games: List[Game] = None
-
     def __init__(self, token: str, parse_mode: str):
+        self.games: List[Game] = []
         super().__init__(token, parse_mode=parse_mode)
 
-    def refresh_games(self):
+    async def refresh_games(self):
         """Обновляем данные о текущих играх"""
-        threading.Timer(SYNC_PERIOD, self.refresh_games).start()
-        self.games = []
-        for item in get_games():
-            self.games.append(Game(*item))
+        while True:
+            self.games = []
+            for item in await get_games():
+                game = Game(*item)
+                await game.async_init()
+                self.games.append(game)
+            await asyncio.sleep(SYNC_PERIOD)
 
     async def get_sought_game(self, team: str, user_id: int) -> Optional[Game]:
         """
@@ -53,9 +54,10 @@ class Onhockey(Bot):
 
     async def on_startup(self, dispatcher: Dispatcher):
         """Хук старта приложения."""
+        # TODO: need use alembic migrations
         await create_db()
-        self.refresh_games()
+        asyncio.create_task(self.refresh_games())
 
     def run(self, dispatcher: Dispatcher):
         """Запуск бота."""
-        executor.start_polling(dispatcher, on_startup=self.on_startup)
+        asyncio.run(executor.start_polling(dispatcher, on_startup=self.on_startup))
