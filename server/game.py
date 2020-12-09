@@ -36,23 +36,17 @@ class Game:
         self.guest: str = guest
 
     async def async_init(self):
-        """
-        Запускает фоновые задачи по поиску ссылок на трансляции
-        """
+        """Запускает фоновые задачи по поиску ссылок на трансляции"""
         await self.get_link_from_channel()
         await self.registry_teams()
 
     async def registry_teams(self):
-        """
-        Записывает в базу название команды
-        """
+        """Записывает в базу название команды"""
         await create_team_if_not_exist(self.home)
         await create_team_if_not_exist(self.guest)
 
     async def get_link_from_channel(self):
-        """
-        Добавляет ссылку на прямую трансляцию из канала
-        """
+        """Добавляет ссылку на прямую трансляцию из канала"""
         futures = [get_source_link(channel) for channel in self.channels]
         for res in await asyncio.gather(*futures, return_exceptions=True):
             if isinstance(res, Exception):
