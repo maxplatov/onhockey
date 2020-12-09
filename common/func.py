@@ -74,7 +74,7 @@ def get_button_markup(links: List[str]) -> Optional[InlineKeyboardMarkup]:
     if links:
         source_markup = InlineKeyboardMarkup()
         for link in links:
-            source_markup.add(InlineKeyboardButton(text=link, url=link))
+            source_markup.add(InlineKeyboardButton(text=link.replace('-', '\-'), url=link))
         return source_markup
     return None
 
