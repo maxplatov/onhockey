@@ -59,7 +59,7 @@ async def text_handler(message: types.message):
     if markup:
         await onhockey_bot.send_message(
             message.from_user.id,
-            UserMessage.ALL_LINK + current_game.info,
+            UserMessage.ALL_LINK + current_game.info.replace('-', '\-'),
             reply_markup=markup
         )
     else:
