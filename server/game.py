@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 
 def _get_teams(info: str) -> List[str]:
     """Парсинг строки с названиями команд"""
-    return info.split('-')
+    return info.split(' - ')
 
 
 @dataclass()
