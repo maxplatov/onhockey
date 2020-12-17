@@ -14,7 +14,7 @@ MONOSPACED_MODE = "`"
 
 def _get_formatted_team_name(team: str) -> str:
     """Имя команды в моноширинном ввиде, чтобы при клике на текст, он копировался"""
-    return MONOSPACED_MODE + team + MONOSPACED_MODE
+    return MONOSPACED_MODE + team.replace('.', '\.') + MONOSPACED_MODE
 
 
 def formatted_top(teams: List[str]) -> str:
