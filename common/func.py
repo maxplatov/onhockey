@@ -17,7 +17,7 @@ def _get_formatted_team_name(team: str) -> str:
     return MONOSPACED_MODE + team.replace('.', '\.') + MONOSPACED_MODE
 
 
-def formatted_top(teams: List[str]) -> str:
+def get_formatted_top(teams: List[str]) -> str:
     """
     Отформатированный список команд для топа
     Args:
@@ -65,7 +65,7 @@ def get_all_games(games) -> str:
     for game in games:
         if msg:
             msg += '\n'
-        msg += _get_formatted_team_name(game.home) + ' \- ' + _get_formatted_team_name(game.guest)
+        msg += get_formatted_info(game)
     return msg
 
 
@@ -81,7 +81,7 @@ def get_button_markup(links: List[str]) -> Optional[InlineKeyboardMarkup]:
 
 def get_teams_info(game: str) -> str:
     """
-    Возвращает строку с названием играющих команж
+    Возвращает строку с названием играющих команд
     Args:
         game: Метаданные игры
 
@@ -99,3 +99,8 @@ def get_valid_link(url: str):
         if parsed_url.scheme and parsed_url.netloc and parsed_url.path:
             return parsed_url.geturl()
     return None
+
+
+def get_formatted_info(game):
+    """Отформатированная для отображения в сообщении строчка играющих команд"""
+    return _get_formatted_team_name(game.home) + ' \- ' + _get_formatted_team_name(game.guest)

@@ -9,7 +9,7 @@ from aiogram.dispatcher import Dispatcher
 from client.onhockey import Onhockey
 from server.gino.operations import top_request_team
 from common.constants import UserMessage
-from common.func import get_button_markup, get_all_games, formatted_top
+from common.func import get_button_markup, get_all_games, get_formatted_top, get_formatted_info
 
 onhockey_bot = Onhockey(os.environ['TELEGRAM_TOKEN'], parse_mode=types.ParseMode.MARKDOWN_V2)
 dispatcher = Dispatcher(onhockey_bot)
@@ -38,7 +38,7 @@ async def top_handler(message: types.message):
     """Доступные команды"""
     await onhockey_bot.send_message(
         message.from_user.id,
-        UserMessage.TOP_TEAMS + '\n' + formatted_top(await top_request_team())
+        UserMessage.TOP_TEAMS + '\n' + get_formatted_top(await top_request_team())
     )
 
 
@@ -59,7 +59,7 @@ async def text_handler(message: types.message):
     if markup:
         await onhockey_bot.send_message(
             message.from_user.id,
-            UserMessage.ALL_LINK + current_game.info.replace('-', '\-'),
+            UserMessage.ALL_LINK + get_formatted_info(current_game),
             reply_markup=markup
         )
     else:
