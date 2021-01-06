@@ -1,19 +1,22 @@
 """Класс для работы с данными сайта."""
 __author__ = 'Платов М.И.'
 
+from datetime import datetime, date
 from typing import List, Optional
 
 import asyncio
 from aiogram import Bot
+from aiogram import types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 
-from server.game import Game
-from server.data_requests import get_games
+from server.sources.game import Game
+from server.games import get_all_games
 from server.gino.main import create_db
-from server.gino.operations import register_request
-from common.func import get_team_name
-from common.constants import SYNC_PERIOD
+from server.gino.sql.requests import register_request
+from server.gino.sql.subscriptions import get_subscribers
+from common.func import get_team_name, get_button_markup, get_formatted_info, escape_telegram_char
+from common.constants import SYNC_PERIOD, UserMessage
 
 
 class Onhockey(Bot):
@@ -27,9 +30,9 @@ class Onhockey(Bot):
         """Обновляем данные о текущих играх"""
         while True:
             self.games = []
-            for item in await get_games():
-                game = Game(*item)
+            for game in await get_all_games():
                 await game.async_init()
+                await self.notify_users(game)
                 self.games.append(game)
             await asyncio.sleep(SYNC_PERIOD)
 
@@ -51,6 +54,38 @@ class Onhockey(Bot):
                 if team_name in game:
                     return game
         return None
+
+    async def _notify(self, game: Game):
+        """Рассылка сообщений подписчикам."""
+        users = await get_subscribers([game.home, game.guest])
+        if users:
+            markup = get_button_markup(game.links)
+            message = UserMessage.START_GAME + get_formatted_info(game)
+            for user in users:
+                await self.send_escaped_message(
+                    user,
+                    message,
+                    reply_markup=markup
+                )
+
+    async def notify_users(self, game: Game):
+        """
+        Нотификация подписчиков о старте игры
+        Args:
+            game: Начинающийся матч
+
+        Returns:
+            Сообщения подписантам
+        """
+        today = date.today()
+        time_shift = datetime.combine(today, datetime.now().time()) - datetime.combine(today, game.start_time)
+        # посылаем уведомления в интервале [5 минут до начала матча; 5 минут со старта матча]
+        if abs(time_shift.total_seconds()) < SYNC_PERIOD:
+            await self._notify(game)
+
+    async def send_escaped_message(self, user_id: int, message: types.message, **kwargs):
+        """Отправка сообщений с заэкранированными символами."""
+        await self.send_message(user_id, escape_telegram_char(message), **kwargs)
 
     async def on_startup(self, dispatcher: Dispatcher):
         """Хук старта приложения."""

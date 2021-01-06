@@ -12,9 +12,6 @@ SYNC_PERIOD = 300.0
 В итоге 2 пересекающихся временных диапазона, для покрытия которых достаточно 5минутного обновления расписания
 """
 
-TOP_LIMIT = 5
-"""Количество команд в ответе для построения топа"""
-
 
 class UserMessage:
     """Сообщения для пользователя"""
@@ -24,29 +21,27 @@ class UserMessage:
     """Сообщение об отсутствии ссылок"""
     ALL_LINK = 'Found links to '
     """Строковый идентификатор для получения следующей ссылки"""
-    TOP_TEAMS = 'Most popular requested teams : '
-    """Список самых популярных команд"""
+    START_GAME = 'Soon will start '
+    """Сообщение о начале игры у команды, на которую подписан"""
     HELP = 'Command : \n' \
-           '\- /all \- view current games \n' \
-           '\- /top \- popular requested teams '
+           '- /all - view current games \n' \
+           '- /add - subscribe to team games \n' \
+           '- /list - list of subscriptions \n' \
+           '- /clear - clear ALL subscriptions'
     """Как пользоваться ботом"""
 
 
-class SiteInfo:
-    """Константы для получение информации с сайта."""
-    ADDRESS = 'http://onhockey.tv'
-    """Адрес сайта"""
-    SCHEDULE = 'schedule_table_eng.php'
-    """Расписание матчей"""
-
-
-class BodyConfig:
-    """Конфигурация парсера для парсинга страницы."""
-    TABLE = {
-        'id': 'gametable'
-    }
-    """Таблица с расписанием"""
-    GAME = {
-        'class': 'game'
-    }
-    """Каждая игра внутри общего расписания"""
+class SubscribesMessage:
+    """Сообщения для раздела подписок"""
+    HELP = "To subscribe to your favorite team's matches send: \n " \
+           "- /add Team name \n" \
+           "For example: /add `Lokomotiv`"
+    """Подписка на команду"""
+    SUCCESS = 'Success! Command list updated.'
+    """Успешная подписка"""
+    ERROR = 'Team not found, try again.'
+    """Неудавшаяся подписка"""
+    CLEAR = 'Subscriptions removed!'
+    """Очистка подписок"""
+    EMPTY = 'Subscriptions list is empty.'
+    """Нет подписок"""

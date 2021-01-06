@@ -1,36 +1,48 @@
 """Вспомогательные функции"""
 __author__ = 'Платов М.И.'
 
-import re
 from typing import List, Optional
 from urllib.parse import urlparse
 
 from transliterate import translit
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
+from server.sources.game import Game
+
 MONOSPACED_MODE = "`"
 """Символ для моноширинности текста"""
+
+ESCAPING_CHARS = ['_', '[', ']', '(', ')', '~', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
 
 
 def _get_formatted_team_name(team: str) -> str:
     """Имя команды в моноширинном ввиде, чтобы при клике на текст, он копировался"""
-    return MONOSPACED_MODE + team.replace('.', '\.') + MONOSPACED_MODE
+    return MONOSPACED_MODE + team + MONOSPACED_MODE
 
 
-def get_formatted_top(teams: List[str]) -> str:
+def escape_telegram_char(text: str) -> str:
+    """Экранирование обязательных символов телеграмм.
+    https://core.telegram.org/bots/api#markdownv2-style"""
+    for char in ESCAPING_CHARS:
+        if char in text:
+            text = text.replace(char, '\\' + char)
+    return text
+
+
+def get_formatted_subscribes(teams: List[str]) -> str:
     """
-    Отформатированный список команд для топа
+    Отформатированный список команд на которые подписан пользователь
     Args:
         teams: массив названий команд
 
     Returns:
-        Отформатированную строку для топа
+        Отформатированная строка
     """
     msg = ''
     for index, team in enumerate(teams):
         if msg:
             msg += '\n'
-        msg += str(index + 1) + '\. ' + _get_formatted_team_name(team)
+        msg += str(index + 1) + '. ' + _get_formatted_team_name(team)
     return msg
 
 
@@ -52,7 +64,7 @@ def get_team_name(team: str) -> str:
     return team_name
 
 
-def get_all_games(games) -> str:
+def get_all_games(games: List[Game]) -> str:
     """
     Все игры, которые транслируются
     Args:
@@ -65,7 +77,7 @@ def get_all_games(games) -> str:
     for game in games:
         if msg:
             msg += '\n'
-        msg += get_formatted_info(game)
+        msg += game.start_time.strftime('%H:%M') + ' (GMT0) ' + get_formatted_info(game)
     return msg
 
 
@@ -74,22 +86,9 @@ def get_button_markup(links: List[str]) -> Optional[InlineKeyboardMarkup]:
     if links:
         source_markup = InlineKeyboardMarkup()
         for link in links:
-            source_markup.add(InlineKeyboardButton(text=link.replace('-', '\-'), url=link))
+            source_markup.add(InlineKeyboardButton(text=escape_telegram_char(link), url=link))
         return source_markup
     return None
-
-
-def get_teams_info(game: str) -> str:
-    """
-    Возвращает строку с названием играющих команд
-    Args:
-        game: Метаданные игры
-
-    Returns:
-        Team 1 - Team 2
-    """
-    info = re.search(r'([A-Za-z].*-.*)', game)
-    return info.group(1) if info else None
 
 
 def get_valid_link(url: str):
@@ -101,6 +100,6 @@ def get_valid_link(url: str):
     return None
 
 
-def get_formatted_info(game):
+def get_formatted_info(game: Game) -> str:
     """Отформатированная для отображения в сообщении строчка играющих команд"""
-    return _get_formatted_team_name(game.home) + ' \- ' + _get_formatted_team_name(game.guest)
+    return _get_formatted_team_name(game.home) + ' - ' + _get_formatted_team_name(game.guest)
