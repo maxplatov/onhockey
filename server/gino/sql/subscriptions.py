@@ -37,15 +37,13 @@ async def get_subscribers(teams: List[str]) -> List[int]:
     """
     teams = [x.strip() for x in teams]
     users = await db.select([
-        db.func.array_agg(Subscriptions.user_id)
+        db.func.array_agg(
+            db.func.distinct(Subscriptions.user_id)
+        )
     ]).select_from(
         Subscriptions.outerjoin(Teams)
     ).where(
         Teams.name.in_(teams)
-    ).distinct(
-        Subscriptions.user_id
-    ).group_by(
-        Subscriptions.user_id
     ).gino.scalar()
     return users
 
