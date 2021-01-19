@@ -4,6 +4,7 @@ __author__ = 'Платов М.И.'
 from typing import List, Optional
 from urllib.parse import urlparse
 
+import tldextract
 from transliterate import translit
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
@@ -81,12 +82,17 @@ def get_all_games(games: List[Game]) -> str:
     return msg
 
 
+def get_domain(url: str) -> str:
+    """Извлекает название домена из ссылки."""
+    return tldextract.extract(url).domain.split('-')[0]
+
+
 def get_button_markup(links: List[str]) -> Optional[InlineKeyboardMarkup]:
     """Кнопка для получения следующей ссылки"""
     if links:
         source_markup = InlineKeyboardMarkup()
         for link in links:
-            source_markup.add(InlineKeyboardButton(text=escape_telegram_char(link), url=link))
+            source_markup.add(InlineKeyboardButton(text=escape_telegram_char(get_domain(link)), url=link))
         return source_markup
     return None
 
