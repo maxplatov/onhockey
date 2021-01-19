@@ -26,16 +26,20 @@ async def get_stats() -> str:
     requests_regular = db.select([
         db.func.concat(
             db.func.text('Regular users - '),
-            db.func.count(db.func.distinct(Requests.user_id)),
+            db.func.count(db.text('*')),
             db.func.text(' (more than ' + str(MIN_REQUEST_COUNT_FOR_REGULAR_USER) + ' requests)')
         ),
         db.func.text('')
     ]).select_from(
-        Requests
-    ).group_by(
-        Requests.user_id
-    ).having(
-        db.func.count(db.func.text('*')) > MIN_REQUEST_COUNT_FOR_REGULAR_USER
+        db.select([
+            Requests.user_id
+        ]).select_from(
+            Requests
+        ).group_by(
+            Requests.user_id
+        ).having(
+            db.func.count(db.func.text('*')) > MIN_REQUEST_COUNT_FOR_REGULAR_USER
+        ).alias('tmp')
     )
     subscriptions = db.select([
         db.func.concat(
