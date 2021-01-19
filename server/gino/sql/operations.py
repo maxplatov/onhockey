@@ -5,6 +5,9 @@ from server.gino.models import db
 from server.gino.models.requests import Requests
 from server.gino.models.subscriptions import Subscriptions
 
+MIN_REQUEST_COUNT_FOR_REGULAR_USER = 5
+"""Минимальное количество запросов для того чтобы считать пользователя постоянным."""
+
 
 async def get_stats() -> str:
     """Статистика по использованию бота."""
@@ -20,6 +23,20 @@ async def get_stats() -> str:
     ]).select_from(
         Requests
     )
+    requests_regular = db.select([
+        db.func.concat(
+            db.func.text('Regular users - '),
+            db.func.count(db.func.distinct(Requests.user_id)),
+            db.func.text(' (more than ' + str(MIN_REQUEST_COUNT_FOR_REGULAR_USER) + ' requests)')
+        ),
+        db.func.text('')
+    ]).select_from(
+        Requests
+    ).group_by(
+        Requests.user_id
+    ).having(
+        db.func.count(db.func.text('*')) > MIN_REQUEST_COUNT_FOR_REGULAR_USER
+    )
     subscriptions = db.select([
         db.func.concat(
             db.func.text('Subscriptions - '),
@@ -32,5 +49,5 @@ async def get_stats() -> str:
     ]).select_from(
         Subscriptions
     )
-    data = await requests.union_all(subscriptions).gino.all()
+    data = await subscriptions.union_all(requests.union_all(requests_regular)).gino.all()
     return '\n'.join([record[0] + '. ' + record[1] for record in data])
