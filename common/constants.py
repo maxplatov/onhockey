@@ -15,7 +15,8 @@ SYNC_PERIOD = 300.0
 
 class UserMessage:
     """Сообщения для пользователя"""
-    START = 'Send me the name of the team you want to see, for example: `Lokomotiv`'
+    START = 'Send me the name of the team you want to see, for example: `Lokomotiv` \n' \
+            'or view schedule - /all'
     """Приветственное сообщение"""
     NOT_FOUND = "The broadcast hasn't started yet or there are no available links"
     """Сообщение об отсутствии ссылок"""
