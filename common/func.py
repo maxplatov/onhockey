@@ -1,6 +1,7 @@
 """Вспомогательные функции"""
 __author__ = 'Платов М.И.'
 
+import re
 from typing import List, Optional
 from urllib.parse import urlparse
 
@@ -14,6 +15,8 @@ MONOSPACED_MODE = "`"
 """Символ для моноширинности текста"""
 
 ESCAPING_CHARS = ['_', '[', ']', '(', ')', '~', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
+
+VK_VIDEO = "vk.com/video"
 
 
 def _get_formatted_team_name(team: str) -> str:
@@ -94,6 +97,19 @@ def get_button_markup(links: List[str]) -> Optional[InlineKeyboardMarkup]:
         for link in links:
             source_markup.add(InlineKeyboardButton(text=escape_telegram_char(get_domain(link)), url=link))
         return source_markup
+    return None
+
+
+def is_vk_link(url: str):
+    """Ссылка на видео вконтакте"""
+    return VK_VIDEO + "_ext.php" in url
+
+
+def get_video_from_vk(url: str):
+    """Генерация прямой ссылки на видео из ссылки для шэринга"""
+    ids = list(map(int, re.findall(r'\d+', url)))
+    if ids and len(ids) >= 2:
+        return "https://" + VK_VIDEO + f"-{ids[0]}_{ids[1]}"
     return None
 
 
