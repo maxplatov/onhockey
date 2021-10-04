@@ -8,13 +8,13 @@ import asyncio
 from aiogram import Bot
 from aiogram import types
 from aiogram.dispatcher import Dispatcher
-from aiogram.utils import executor
+from aiogram.utils import executor, exceptions as aiogram_exceptions
 
 from server.sources.game import Game
 from server.games import get_all_games
 from server.gino.main import create_db
 from server.gino.sql.requests import register_request
-from server.gino.sql.subscriptions import get_subscribers
+from server.gino.sql.subscriptions import get_subscribers, clear
 from common.func import get_team_name, get_button_markup, get_formatted_info, escape_telegram_char
 from common.constants import SYNC_PERIOD, UserMessage
 
@@ -84,8 +84,11 @@ class Onhockey(Bot):
             await self._notify(game)
 
     async def send_escaped_message(self, user_id: int, message: types.message, **kwargs):
-        """Отправка сообщений с заэкранированными символами."""
-        await self.send_message(user_id, escape_telegram_char(message), **kwargs)
+        """Отправка сообщений с экранированными символами."""
+        try:
+            await self.send_message(user_id, escape_telegram_char(message), **kwargs)
+        except aiogram_exceptions.BotBlocked:
+            await clear(user_id)
 
     async def on_startup(self, dispatcher: Dispatcher):
         """Хук старта приложения."""
