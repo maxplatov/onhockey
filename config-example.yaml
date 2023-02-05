@@ -1,0 +1,9 @@
+app:
+  port: 7520
+
+db:
+  host: db
+  port: 5432
+  username: onhockey
+  pwd: onhockey
+  database: onhockey
