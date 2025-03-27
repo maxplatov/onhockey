@@ -16,7 +16,14 @@ async def get_response(path: str, site: str) -> str:
     Returns:
         Текст ответа
     """
-    session = aiohttp.ClientSession()
+    headers = {
+        "accept": "*/*",
+        "cache-control": "no-cache",
+        "dnt": "1",
+        "pragma": "no-cache",
+        "referer": site,
+    }
+    session = aiohttp.ClientSession(headers=headers)
     try:
         async with session.get(parse.urljoin(site, path), raise_for_status=True) as resp:
             if resp.status == 200:

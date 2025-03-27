@@ -6,7 +6,7 @@ class SiteInfo:
     """Константы для получение информации с сайта."""
     ADDRESS = 'http://onhockey.tv'
     """Адрес сайта"""
-    SCHEDULE = 'schedule_table_eng.php'
+    SCHEDULE = 'shed_tab_eng_rw.php'
     """Расписание матчей"""
 
 
