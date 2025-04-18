@@ -30,6 +30,7 @@ class UserMessage:
            '- /list - list of subscriptions \n' \
            '- /clear - clear ALL subscriptions'
     """Как пользоваться ботом"""
+    ERROR = "Something went wrong"
 
 
 class SubscribesMessage:
